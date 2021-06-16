@@ -1,4 +1,4 @@
-#### Mandatory packages to install
+## Mandatory packages to install
 
 npm install --save-dev nodemon
 
