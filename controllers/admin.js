@@ -15,12 +15,22 @@ exports.postAddProduct = (req, res, next) => {
 
     //inserting data and creating product using sequelize
 
-    Product.create({
-        title: title,
-        price: price,
-        imageUrl: imageUrl,
-        description: description
-    })
+    // Product.create({
+    //     title: title,
+    //     price: price,
+    //     imageUrl: imageUrl,
+    //     description: description,
+    //     // userId: req.user.id
+    // })
+
+    // when has the relations we can replace the above code as this
+    req.user
+        .createProduct({
+            title: title,
+            price: price,
+            imageUrl: imageUrl,
+            description: description,
+        })
         .then(result => {
             console.log("Created Product");
             res.redirect('/');
@@ -50,8 +60,11 @@ exports.getEditProduct = (req, res, next) => {
 
     const productId = req.params.productId;
 
-    Product.findByPk(productId)
-        .then(product => {
+    req.user
+        .getProducts({ where: { id: productId } })
+        // Product.findByPk(productId)
+        .then(products => {       // if no relation we use findByPk and fetch the single product
+            const product = products[0];    // only if we get multiple products
             if (!product) {
                 res.redirect('/');
             }
@@ -108,7 +121,9 @@ exports.postEditProduct = (req, res, next) => {
 exports.getProducts = (req, res, next) => {
     // using sequelize to fetch the products
 
-    Product.findAll()
+    // Product.findAll()
+    req.user
+        .getProducts()
         .then(products => {
             res.render('admin/products', {
                 pageTitle: 'My Shop',

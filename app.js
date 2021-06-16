@@ -47,7 +47,7 @@ app.use(shopRoutes);
 app.use(errorController.get404);
 
 Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
-// User.hasMany(Product);
+User.hasMany(Product);
 
 // sequelize.sync({ force: true })    // used to override the tables in the database
 sequelize.sync()

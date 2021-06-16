@@ -1,3 +1,6 @@
+## Cart Model using Mysql2
+
+```
 const fs = require('fs');
 const path = require('path');
 
@@ -71,3 +74,4 @@ module.exports = class Cart {
         })
     }
 }
+```
