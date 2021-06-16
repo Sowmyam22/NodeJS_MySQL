@@ -13,13 +13,30 @@ exports.getAddProduct = (req, res, next) => {
 exports.postAddProduct = (req, res, next) => {
     const { title, imageUrl, price, description } = req.body;
 
-    const product = new Product(null, title, imageUrl, price, description);
+    //inserting data and creating product using sequelize
 
-    product.save()
-        .then(() => {
-            res.redirect('/');
+    Product.create({
+        title: title,
+        price: price,
+        imageUrl: imageUrl,
+        description: description
+    })
+        .then(result => {
+            console.log("Created Product");
         })
-        .catch(err => { console.log(err) });
+        .catch(err => {
+            console.log(err);
+        })
+
+    // storing the product in the fs
+
+    // const product = new Product(null, title, imageUrl, price, description);
+
+    // product.save()
+    //     .then(() => {
+    //         res.redirect('/');
+    //     })
+    //     .catch(err => { console.log(err) });
 };
 
 // get the edit product form
@@ -55,8 +72,10 @@ exports.postEditProduct = (req, res, next) => {
 
 // To get admin products along with edit and delete functionality
 exports.getProducts = (req, res, next) => {
-    Product.fetchAll()
-        .then(([products]) => {
+    // using sequelize to fetch the products
+
+    Product.findAll()
+        .then(products => {
             res.render('admin/products', {
                 pageTitle: 'My Shop',
                 path: '/admin/products',
@@ -66,6 +85,20 @@ exports.getProducts = (req, res, next) => {
         .catch(err => {
             console.log(err);
         })
+        
+    // using mysql2 to fetch the products
+
+    // Product.fetchAll()
+    //     .then(([products]) => {
+    //         res.render('admin/products', {
+    //             pageTitle: 'My Shop',
+    //             path: '/admin/products',
+    //             prods: products
+    //         });
+    //     })
+    //     .catch(err => {
+    //         console.log(err);
+    //     })
 }
 
 exports.postDeleteProduct = (req, res, next) => {

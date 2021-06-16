@@ -2,48 +2,111 @@ const Product = require('../models/product');
 const Cart = require('../models/cart');
 
 exports.getProducts = (req, res, next) => {
-    Product.fetchAll()
-        .then(([products]) => {
+    //fetching the products using sequelize
+
+    Product.findAll()
+        .then(products => {
             res.render('shop/product-list', {
                 pageTitle: 'My Shop',
                 path: '/products',
                 prods: products
             });
         })
-        .catch((err) => {
+        .catch(err => {
             console.log(err);
-        });
+        })
+
+    // using mysql2 to fetch all the products from database
+
+    // Product.fetchAll()
+    //     .then(([products]) => {
+    //         res.render('shop/product-list', {
+    //             pageTitle: 'My Shop',
+    //             path: '/products',
+    //             prods: products
+    //         });
+    //     })
+    //     .catch((err) => {
+    //         console.log(err);
+    //     });
 }
 
 // to get the particular product => product detail
 exports.getProduct = (req, res, next) => {
     const productId = req.params.productId;
 
-    Product.findById(productId)
-        .then(([product]) => {
+    // finding the product using the sequelize 
+
+    Product.findByPk(productId)         // in sequelize findById is replace by findByPk
+        .then(product => {
             res.render('shop/product-detail', {
                 pageTitle: 'My Shop',
                 path: '/products',
-                product: product[0]
+                product: product
             });
         })
         .catch(err => {
             console.log(err);
         })
+
+    // or we can use findAll along with where clause in the sequelize to find the product
+
+    // Product.findAll({ where: { id: productId } })
+    //     .then(products => {
+    //         res.render('shop/product-detail', {
+    //             pageTitle: 'My Shop',
+    //             path: '/products',
+    //             product: products[0]
+    //         });
+    //     })
+    //     .catch(err => {
+    //         console.log(err);
+    //     })
+
+    // using mysql2
+
+    // Product.findById(productId)
+    //     .then(([product]) => {
+    //         res.render('shop/product-detail', {
+    //             pageTitle: 'My Shop',
+    //             path: '/products',
+    //             product: product[0]
+    //         });
+    //     })
+    //     .catch(err => {
+    //         console.log(err);
+    //     })
+
 }
 
 exports.getIndex = (req, res, next) => {
-    Product.fetchAll()
-        .then(([products]) => {
+    //fetching the products using sequelize
+
+    Product.findAll()
+        .then(products => {
             res.render('shop/index', {
                 pageTitle: 'My Shop',
                 path: '/',
                 prods: products
             });
         })
-        .catch((err) => {
+        .catch(err => {
             console.log(err);
-        });
+        })
+
+    // using mysql2 
+
+    // Product.fetchAll()
+    //     .then(([products]) => {
+    //         res.render('shop/index', {
+    //             pageTitle: 'My Shop',
+    //             path: '/',
+    //             prods: products
+    //         });
+    //     })
+    //     .catch((err) => {
+    //         console.log(err);
+    //     });
 }
 
 exports.postCart = (req, res, next) => {
