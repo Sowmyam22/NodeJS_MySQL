@@ -23,6 +23,7 @@ exports.postAddProduct = (req, res, next) => {
     })
         .then(result => {
             console.log("Created Product");
+            res.redirect('/');
         })
         .catch(err => {
             console.log(err);
@@ -48,26 +49,59 @@ exports.getEditProduct = (req, res, next) => {
     }
 
     const productId = req.params.productId;
-    Product.findById(productId, product => {
-        if (!product) {
-            res.redirect('/');
-        }
-        res.render('admin/edit-product', {
-            pageTitle: 'My Shop',
-            path: '/admin/edit-product',
-            editing: editMode,
-            product: product
-        });
-    })
+
+    Product.findByPk(productId)
+        .then(product => {
+            if (!product) {
+                res.redirect('/');
+            }
+            res.render('admin/edit-product', {
+                pageTitle: 'My Shop',
+                path: '/admin/edit-product',
+                editing: editMode,
+                product: product
+            });
+        })
+        .catch(err => {
+            console.log(err);
+        })
+
+    // Product.findById(productId, product => {
+    //     if (!product) {
+    //         res.redirect('/');
+    //     }
+    //     res.render('admin/edit-product', {
+    //         pageTitle: 'My Shop',
+    //         path: '/admin/edit-product',
+    //         editing: editMode,
+    //         product: product
+    //     });
+    // })
 };
 
 exports.postEditProduct = (req, res, next) => {
     const { productId, title, imageUrl, price, description } = req.body;
 
-    const updatedProduct = new Product(productId, title, imageUrl, price, description);
-    updatedProduct.save();
+    // const updatedProduct = new Product(productId, title, imageUrl, price, description);
+    // updatedProduct.save();
 
-    res.redirect('/admin/products');
+    // using sequelize to update the product details
+
+    Product.findByPk(productId)
+        .then(product => {
+            product.title = title;
+            product.price = price;
+            product.imageUrl = imageUrl;
+            product.description = description;
+
+            return product.save();   // sequelize provides save() method to update the details in the database
+        })
+        .then(result => {
+            res.redirect('/admin/products');
+        })
+        .catch(err => {
+            console.log(err);
+        })
 }
 
 // To get admin products along with edit and delete functionality
@@ -85,7 +119,7 @@ exports.getProducts = (req, res, next) => {
         .catch(err => {
             console.log(err);
         })
-        
+
     // using mysql2 to fetch the products
 
     // Product.fetchAll()
@@ -104,6 +138,29 @@ exports.getProducts = (req, res, next) => {
 exports.postDeleteProduct = (req, res, next) => {
     const productId = req.body.productId;
 
-    Product.deleteById(productId);
-    res.redirect('/admin/products');
+    // Product.deleteById(productId);
+    // res.redirect('/admin/products');
+
+    // using sequelize to delete the product
+
+    // Product.destroy({ where: { id: productId } })
+    //     .then(result => {
+    //         res.redirect('/admin/products');
+    //     })
+    //     .catch(err => {
+    //         console.log(err);
+    //     })
+
+    // or
+
+    Product.findByPk(productId)
+        .then(product => {
+            return product.destroy();
+        })
+        .then(result => {
+            res.redirect('/admin/products');
+        })
+        .catch(err => {
+            console.log(err);
+        })
 }
