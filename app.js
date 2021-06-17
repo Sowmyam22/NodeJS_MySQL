@@ -11,6 +11,8 @@ const errorController = require('./controllers/error');
 const sequelize = require('./util/database');
 const Product = require('./models/product');
 const User = require('./models/user');
+const Cart = require('./models/cart');
+const CartItem = require('./models/cart-item');
 
 const app = express();
 
@@ -32,13 +34,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 //registers the middleware for the incoming request
 app.use((req, res, next) => {
     User.findByPk(1)
-    .then(user => {
-        req.user = user;
-        next();
-    })
-    .catch(err => {
-        console.log(err);
-    });
+        .then(user => {
+            req.user = user;
+            next();
+        })
+        .catch(err => {
+            console.log(err);
+        });
 });
 
 app.use('/admin', adminData.routes);
@@ -48,6 +50,10 @@ app.use(errorController.get404);
 
 Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
 User.hasMany(Product);
+User.hasOne(Cart);
+Cart.belongsTo(User);
+Cart.belongsToMany(Product, { through: CartItem });
+Product.belongsToMany(Cart, { through: CartItem });
 
 // sequelize.sync({ force: true })    // used to override the tables in the database
 sequelize.sync()
@@ -62,7 +68,6 @@ sequelize.sync()
         return user;
     })
     .then(user => {
-        // console.log(user);
         app.listen(3000);
     })
     .catch(err => {
