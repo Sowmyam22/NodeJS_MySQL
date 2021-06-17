@@ -1,7 +1,7 @@
 const Product = require('../models/product');
 
 // get the product form
-exports.getAddProduct = (req, res, next) => {
+exports.getAddProduct = (req, res) => {
     res.render('admin/edit-product', {
         pageTitle: 'My Shop',
         path: '/admin/add-product',
@@ -10,7 +10,7 @@ exports.getAddProduct = (req, res, next) => {
 };
 
 // add product 
-exports.postAddProduct = (req, res, next) => {
+exports.postAddProduct = (req, res) => {
     const { title, imageUrl, price, description } = req.body;
 
     //inserting data and creating product using sequelize
@@ -51,7 +51,7 @@ exports.postAddProduct = (req, res, next) => {
 };
 
 // get the edit product form
-exports.getEditProduct = (req, res, next) => {
+exports.getEditProduct = (req, res) => {
     const editMode = req.query.edit;
 
     if (!editMode) {
@@ -92,7 +92,7 @@ exports.getEditProduct = (req, res, next) => {
     // })
 };
 
-exports.postEditProduct = (req, res, next) => {
+exports.postEditProduct = (req, res) => {
     const { productId, title, imageUrl, price, description } = req.body;
 
     // const updatedProduct = new Product(productId, title, imageUrl, price, description);
@@ -118,7 +118,7 @@ exports.postEditProduct = (req, res, next) => {
 }
 
 // To get admin products along with edit and delete functionality
-exports.getProducts = (req, res, next) => {
+exports.getProducts = (req, res) => {
     // using sequelize to fetch the products
 
     // Product.findAll()
@@ -150,7 +150,7 @@ exports.getProducts = (req, res, next) => {
     //     })
 }
 
-exports.postDeleteProduct = (req, res, next) => {
+exports.postDeleteProduct = (req, res) => {
     const productId = req.body.productId;
 
     // Product.deleteById(productId);
