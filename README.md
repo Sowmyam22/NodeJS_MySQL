@@ -2,4 +2,4 @@
 
 npm install --save-dev nodemon
 
-npm install --save express body-parser ejs mysql2
+npm install --save express body-parser ejs mysql2 sequelize
